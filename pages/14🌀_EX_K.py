@@ -100,15 +100,8 @@ if st.button("🔍 Check My Work", key="check_button"):
         else:
             st.session_state.k_results.append("❌")
 
-    # ✅ Save snapshot for PDF before clearing radios
+    # ✅ Save snapshot for PDF
     st.session_state.saved_for_pdf = dict(st.session_state.responses)
-
-    # Reset radios visually
-    for w in words:
-        if f"radio_{w}" in st.session_state:
-            del st.session_state[f"radio_{w}"]
-    st.rerun()
-
 
 # --- Show feedback ---
 if "k_results" in st.session_state:
@@ -129,6 +122,15 @@ else:
         pdf_bytes = generate_pdf(name, st.session_state.saved_for_pdf, st.session_state.k_results)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M")
         filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
-        st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+
+        if st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf", key="download_pdf"):
+            # 🔄 Reset after download
+            for w in words:
+                if f"radio_{w}" in st.session_state:
+                    del st.session_state[f"radio_{w}"]
+            for key in ["k_results", "saved_for_pdf", "responses"]:
+                if key in st.session_state:
+                    del st.session_state[key]
+            st.rerun()
     else:
         st.info("👉 First check your work to generate a report.")
