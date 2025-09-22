@@ -11,7 +11,7 @@ st.set_page_config(page_title="Ch1 Exercise E: Phonetic Word Features", layout="
 st.title("Chapter 1 – Exercise E")
 st.markdown("### 🎯 Phonetic Identification Task")
 
-st.markdown("Read each question carefully and select **all words that match the description**. Try to say them aloud and focus on their **initial, medial, or final sounds** depending on the prompt.")
+st.markdown("Read each question carefully and check **all words that match the description**. Try saying the words out loud to identify the initial, medial, or final sound.")
 
 name = st.text_input("Enter your name:")
 
@@ -58,36 +58,39 @@ options = [
     ["who", "me", "us", "but", "him"]
 ]
 
-# Store selections
-responses = []
-check_results = []
-feedback_mode = False
+# Session state for answers and feedback
+if "answers" not in st.session_state:
+    st.session_state.answers = [[] for _ in range(len(questions))]
+if "checked" not in st.session_state:
+    st.session_state.checked = False
+if "results" not in st.session_state:
+    st.session_state.results = []
 
-if "check_pressed" not in st.session_state:
-    st.session_state.check_pressed = False
-
-st.markdown("___")
+# UI for checkboxes
 st.subheader("📝 Questions")
+for i, (question_text, word_list) in enumerate(zip(questions, options)):
+    st.markdown(f"**{i+1}. {question_text[0]}**")
+    selected_words = []
+    cols = st.columns(len(word_list))
+    for j, word in enumerate(word_list):
+        with cols[j]:
+            if st.checkbox(word, key=f"q{i}_word{j}"):
+                selected_words.append(word)
+    st.session_state.answers[i] = selected_words
 
-for i, (question, correct_answers) in enumerate(questions):
-    st.markdown(f"**{i+1}. {question}**")
-    selected = st.multiselect("", options[i], key=f"q{i+1}")
-    responses.append((question, selected))
-
+# Answer checking
 if st.button("🔍 Check Answers"):
-    st.session_state.check_pressed = True
+    st.session_state.checked = True
+    st.session_state.results = []
+    for i, (question, correct) in enumerate(questions):
+        selected_set = set(st.session_state.answers[i])
+        correct_set = set(correct)
+        st.session_state.results.append("✅" if selected_set == correct_set else "❌")
 
-# Checking logic
-if st.session_state.check_pressed:
+# Display results
+if st.session_state.checked:
     st.subheader("✅ Feedback")
-    for i, (question, selected) in enumerate(responses):
-        correct_set = set(questions[i][1])
-        selected_set = set(selected)
-        if selected_set == correct_set:
-            result = "✅"
-        else:
-            result = "❌"
-        check_results.append(result)
+    for i, result in enumerate(st.session_state.results):
         st.markdown(f"**{i+1}. {result}** — {'Correct' if result == '✅' else 'Needs review'}")
 
 # PDF generation
@@ -105,8 +108,8 @@ def generate_pdf(name, responses, results=None):
     elements.append(Paragraph(f"Timestamp: {timestamp}", styles['Normal']))
     elements.append(Spacer(1, 12))
 
-    for i, (question, selected) in enumerate(responses):
-        qtext = f"{i+1}. {question}"
+    for i, (question, selected) in enumerate(zip(questions, st.session_state.answers)):
+        qtext = f"{i+1}. {question[0]}"
         selected_text = ", ".join(selected) if selected else "(No selection)"
         feedback = f"Result: {results[i]}" if results else ""
         elements.append(Paragraph(qtext, styles['Normal']))
@@ -119,8 +122,9 @@ def generate_pdf(name, responses, results=None):
     buffer.seek(0)
     return buffer
 
+# Download PDF
 if name and st.button("📄 Download My Report"):
-    pdf_bytes = generate_pdf(name, responses, check_results if st.session_state.check_pressed else None)
+    pdf_bytes = generate_pdf(name, st.session_state.answers, st.session_state.results if st.session_state.checked else None)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     filename = f"ExerciseE_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
     st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
