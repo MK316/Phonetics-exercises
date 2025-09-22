@@ -26,13 +26,13 @@ name = st.text_input("Enter your name:")
 
 # List of words (adder is the example)
 words = [
-    "Example: adder", "father", "singing", "etching", "robber",
+    "adder", "father", "singing", "etching", "robber",
     "ether", "pleasure", "hopper", "selling", "sunny", "lodger"
 ]
 
 # Answer key
 answer_key = {
-    "Example: adder":   ("voiced", "alveolar", "stop"),
+    "adder":   ("voiced", "alveolar", "stop"),
     "father":  ("voiced", "dental", "fricative"),
     "singing": ("voiced", "velar", "nasal"),
     "etching": ("voiceless", "palato-alveolar", "affricate"),
