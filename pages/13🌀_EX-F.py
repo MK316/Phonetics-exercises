@@ -10,7 +10,7 @@ from reportlab.lib import colors
 st.set_page_config(page_title="Ch1 Exercise F: Medial Consonant Analysis", layout="wide")
 
 st.title("Chapter 1 – Exercise F")
-st.markdown("### 🧠 Analyze the medial consonant sound in each word")
+st.markdown("### Analyze the medial consonant sound in each word")
 
 st.markdown("""
 Define the **consonant sound in the middle** of each of the following words.  
@@ -32,7 +32,7 @@ words = [
 
 # Answer key
 answer_key = {
-    "adder":   ("voiced", "alveolar", "stop"),
+    "Example: adder":   ("voiced", "alveolar", "stop"),
     "father":  ("voiced", "dental", "fricative"),
     "singing": ("voiced", "velar", "nasal"),
     "etching": ("voiceless", "palato-alveolar", "affricate"),
@@ -56,7 +56,7 @@ manner_options = [
 ]
 
 # Table input
-st.markdown("### 📝 Fill out the table:")
+st.markdown("### 📝 Fill out the table for the middle sound:")
 
 data = []
 
