@@ -5,6 +5,7 @@ import streamlit as st
 # ---------------- Page setup ----------------
 st.set_page_config(page_title="Vocal Organs Quiz", page_icon="🗣️", layout="wide")
 st.markdown("#### 🗣️ Understanding Speech Production")
+st.write("For this activity, capture the screen; there's no pdf generation for this.")
 
 # ---------------- Image + Answer Key ----------------
 IMAGE_URL = "https://raw.githubusercontent.com/MK316/english-phonetics/main/pages/images/vocal_organ.png"
