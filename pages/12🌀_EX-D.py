@@ -32,36 +32,65 @@ image_urls = {
     "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
     "h": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png"
 }
+letters = list(image_urls.keys())
 
-# Keep answers in session
+# --- Session state for answers & navigation ---
 if "responses_D" not in st.session_state:
-    st.session_state.responses_D = {k: {"place": "", "manner": "", "example": ""} for k in image_urls.keys()}
+    st.session_state.responses_D = {k: {"place": "", "manner": "", "example": ""} for k in letters}
+if "d_index" not in st.session_state:
+    st.session_state.d_index = 0  # start on (a)
 
-# UI: show each image with inputs
-for label, url in image_urls.items():
-    st.markdown(f"#### ({label}) Diagram")
-    st.image(url, caption=f"Figure 1.16 ({label})", width=300)
-
-    st.session_state.responses_D[label]["place"] = st.text_input(
-        f"({label}) Place of articulation",
-        value=st.session_state.responses_D[label]["place"],
-        key=f"place_{label}"
+# --- Diagram picker + prev/next ---
+colA, colB, colC = st.columns([1,2,1])
+with colA:
+    if st.button("⬅️ Previous", use_container_width=True, disabled=st.session_state.d_index == 0):
+        st.session_state.d_index = max(0, st.session_state.d_index - 1)
+with colB:
+    current_letter = st.selectbox(
+        "Go to diagram",
+        [f"({l})" for l in letters],
+        index=st.session_state.d_index,
+        key="d_select",
     )
-    st.session_state.responses_D[label]["manner"] = st.text_input(
-        f"({label}) Manner of articulation",
-        value=st.session_state.responses_D[label]["manner"],
-        key=f"manner_{label}"
-    )
-    st.session_state.responses_D[label]["example"] = st.text_input(
-        f"({label}) Example word",
-        value=st.session_state.responses_D[label]["example"],
-        key=f"example_{label}"
-    )
+    # sync index if changed via selectbox
+    st.session_state.d_index = [f"({l})" for l in letters].index(current_letter)
+with colC:
+    if st.button("Next ➡️", use_container_width=True, disabled=st.session_state.d_index == len(letters) - 1):
+        st.session_state.d_index = min(len(letters) - 1, st.session_state.d_index + 1)
 
-    st.markdown("---")
+letter = letters[st.session_state.d_index]
+st.markdown(f"#### Diagram {current_letter}")
+st.image(image_urls[letter], caption=f"Figure 1.16 {current_letter}", width=360)
 
-# --- PDF generator ---
-def generate_pdf(name, responses):
+# --- Inputs for the current diagram ---
+st.session_state.responses_D[letter]["place"] = st.text_input(
+    "Place of articulation",
+    value=st.session_state.responses_D[letter]["place"],
+    key=f"place_{letter}",
+)
+st.session_state.responses_D[letter]["manner"] = st.text_input(
+    "Manner of articulation",
+    value=st.session_state.responses_D[letter]["manner"],
+    key=f"manner_{letter}",
+)
+st.session_state.responses_D[letter]["example"] = st.text_input(
+    "Example word (begins with this sound)",
+    value=st.session_state.responses_D[letter]["example"],
+    key=f"example_{letter}",
+)
+
+st.markdown("---")
+st.subheader("Summary (auto-saves)")
+# Compact summary table in the app
+summary_rows = [["Diagram", "Place", "Manner", "Example"]]
+for k in letters:
+    a = st.session_state.responses_D[k]
+    summary_rows.append([k, a["place"], a["manner"], a["example"]])
+
+st.table(summary_rows)
+
+# --- PDF generator (returns real PDF bytes) ---
+def generate_pdf(name: str, responses: dict) -> bytes:
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
     styles = getSampleStyleSheet()
@@ -74,27 +103,27 @@ def generate_pdf(name, responses):
     elements.append(Paragraph(f"Timestamp: {timestamp}", styles["Normal"]))
     elements.append(Spacer(1, 12))
 
-    # Build table
-    header = ["Diagram", "Place of Articulation", "Manner of Articulation", "Example Word"]
-    rows = [header]
-    for k, ans in responses.items():
-        rows.append([k, ans["place"], ans["manner"], ans["example"]])
+    table_header = ["Diagram", "Place of Articulation", "Manner of Articulation", "Example Word"]
+    table_data = [table_header]
+    for k in letters:
+        ans = responses.get(k, {"place": "", "manner": "", "example": ""})
+        table_data.append([k, ans["place"], ans["manner"], ans["example"]])
 
-    tbl = Table(rows, repeatRows=1)
+    tbl = Table(table_data, repeatRows=1)
     tbl.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.lightblue),
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]))
     elements.append(tbl)
 
     doc.build(elements)
     buffer.seek(0)
-    return buffer
+    return buffer.getvalue()  # >>> return raw PDF bytes, not HTML
 
-
-# --- PDF Export ---
+# --- PDF Export with reset after download ---
 st.markdown("---")
 st.subheader("📄 Export Your Report")
 
@@ -102,12 +131,21 @@ if not name:
     st.warning("Please enter your name to enable PDF download.")
 else:
     pdf_bytes = generate_pdf(name, st.session_state.responses_D)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    filename = f"ExerciseD_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
+    ts = datetime.now().strftime("%Y%m%d_%H%M")
+    filename = f"ExerciseD_Report_{name.replace(' ', '_')}_{ts}.pdf"
 
-    if st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf", key="download_pdf_D"):
-        # Reset after download
-        for k in list(st.session_state.responses_D.keys()):
-            for field in ["place", "manner", "example"]:
-                st.session_state.responses_D[k][field] = ""
+    # download_button returns True exactly when clicked
+    if st.download_button(
+        "⬇️ Download PDF",
+        data=pdf_bytes,
+        file_name=filename,
+        mime="application/pdf",
+        key="download_pdf_D",
+    ):
+        # Reset all answers for a fresh attempt
+        for k in letters:
+            st.session_state.responses_D[k] = {"place": "", "manner": "", "example": ""}
+        st.session_state.d_index = 0
+        st.session_state.d_select = "(a)"
+        st.success("Report downloaded. The exercise has been reset.")
         st.rerun()
