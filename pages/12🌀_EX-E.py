@@ -23,13 +23,13 @@ questions = [
     ("Circle the words that begin with an alveolar consonant.", ["zip", "nip", "lip", "sip", "tip", "dip"]),
     ("Circle the words that begin with a dental consonant.", ["thigh", "thy"]),
     ("Circle the words that begin with a palato-alveolar consonant.", ["shy"]),
-    ("Circle the words that end with a fricative.", ["race", "wreath", "bush", "breathe","rave","rose","rough"]),
-    ("Circle the words that end with a nasal.", ["rain", "rang", "dumb]),
+    ("Circle the words that end with a fricative.", ["race", "wreath", "bush", "breathe", "rave", "rose", "rough"]),
+    ("Circle the words that end with a nasal.", ["rain", "rang", "dumb"]),
     ("Circle the words that end with a stop.", ["lip", "crab", "dog", "hide", "back"]),
     ("Circle the words that begin with a lateral.", ["lull"]),
     ("Circle the words that begin with an approximant.", ["we", "you", "one", "run"]),
     ("Circle the words that end with an affricate.", ["much", "edge"]),
-    ("Circle the words in which the consonant in the middle is voiced.", ["mother", "robber", "leisure", "stomach","razor"]),
+    ("Circle the words in which the consonant in the middle is voiced.", ["mother", "robber", "leisure", "stomach", "razor"]),
     ("Circle the words that contain a high vowel.", ["weed", "suit", "meet"]),
     ("Circle the words that contain a low vowel.", ["lad"]),
     ("Circle the words that contain a front vowel.", ["gate", "cat", "kit"]),
@@ -111,8 +111,8 @@ def generate_pdf(name, responses, results=None):
     for i, (question, selected) in enumerate(zip(questions, st.session_state.answers)):
         qtext = f"{i+1}. {question[0]}"
         selected_text = ", ".join(selected) if selected else "(No selection)"
-        
-        # Determine quality of result
+
+        # Determine feedback level
         correct_set = set(question[1])
         selected_set = set(selected)
         correct_selections = selected_set & correct_set
@@ -132,7 +132,6 @@ def generate_pdf(name, responses, results=None):
     doc.build(elements)
     buffer.seek(0)
     return buffer
-
 
 # Download PDF
 if name and st.button("📄 Download My Report"):
