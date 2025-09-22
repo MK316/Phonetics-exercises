@@ -28,13 +28,13 @@ name = st.text_input("Enter your name:")
 
 # Fixed input structure
 default_data = [
-    {"Symbol": "[s]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[k]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[n]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[f]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[l]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[n]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
-    {"Symbol": "[t]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[s]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[k]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Mannern": ""},
+    {"Symbol": "[f]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[l]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[t]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
 ]
 
 df = pd.DataFrame(default_data)
