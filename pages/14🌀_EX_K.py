@@ -33,6 +33,18 @@ answer_key = {
 
 options = list(range(1, 8))  # 1–7 choices
 
+# Keep student responses in session
+if "responses" not in st.session_state:
+    st.session_state.responses = {}
+
+# Collect responses via radios
+for word in words:
+    st.session_state.responses[word] = st.radio(
+        word, options, horizontal=True,
+        key=f"radio_{word}",
+        index=options.index(st.session_state.responses.get(word, 1)) if word in st.session_state.responses else 0
+    )
+
 # --- PDF generator ---
 def generate_pdf(name, responses, results=None):
     buffer = BytesIO()
@@ -78,25 +90,25 @@ def generate_pdf(name, responses, results=None):
     buffer.seek(0)
     return buffer
 
-# --- Collect responses ---
-responses = {}
-for word in words:
-    responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
 # --- Check answers button ---
 if st.button("🔍 Check My Work", key="check_button"):
     st.session_state.k_results = []
     for w in words:
-        if responses[w] == answer_key[w]:
+        if st.session_state.responses[w] == answer_key[w]:
             st.session_state.k_results.append("✅")
         else:
             st.session_state.k_results.append("❌")
 
-    # Reset radios immediately after checking
+    # ✅ Save snapshot for PDF before clearing radios
+    st.session_state.saved_for_pdf = dict(st.session_state.responses)
+
+    # Reset radios visually
     for w in words:
         if f"radio_{w}" in st.session_state:
             del st.session_state[f"radio_{w}"]
     st.rerun()
+
 
 # --- Show feedback ---
 if "k_results" in st.session_state:
@@ -113,7 +125,10 @@ st.subheader("📄 Export Your Report")
 if not name:
     st.warning("Please enter your name to enable PDF download.")
 else:
-    pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
-    st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+    if "saved_for_pdf" in st.session_state:
+        pdf_bytes = generate_pdf(name, st.session_state.saved_for_pdf, st.session_state.k_results)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
+        st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+    else:
+        st.info("👉 First check your work to generate a report.")
