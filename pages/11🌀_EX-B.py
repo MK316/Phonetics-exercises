@@ -30,7 +30,7 @@ name = st.text_input("Enter your name:")
 default_data = [
     {"Symbol": "[s]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[k]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Mannern": ""},
+    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[f]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[l]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
