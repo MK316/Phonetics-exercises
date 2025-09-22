@@ -85,11 +85,11 @@ def generate_pdf(name, responses, results=None):
     for i, w in enumerate(words):
         selected = responses[w]
         correct = answer_key[w]
-        if results:
-            result = results[i]
+        if selected == correct:
+            result_text = "Correct"
         else:
-            result = ""
-        rows.append([w, selected, correct, result])
+            result_text = "Incorrect"
+        rows.append([w, selected, correct, result_text])
 
     tbl = Table(rows, repeatRows=1)
     style_cmds = [
@@ -100,21 +100,21 @@ def generate_pdf(name, responses, results=None):
     ]
 
     # Shade wrong selections in black
-    if results:
-        for i, w in enumerate(words, start=1):
-            correct = answer_key[w]
-            selected = responses[w]
-            if selected != correct:
-                style_cmds += [
-                    ("BACKGROUND", (1, i), (1, i), colors.black),
-                    ("TEXTCOLOR", (1, i), (1, i), colors.white),
-                ]
+    for i, w in enumerate(words, start=1):
+        selected = responses[w]
+        correct = answer_key[w]
+        if selected != correct:
+            style_cmds += [
+                ("BACKGROUND", (1, i), (1, i), colors.black),
+                ("TEXTCOLOR", (1, i), (1, i), colors.white),
+            ]
 
     tbl.setStyle(TableStyle(style_cmds))
     elements.append(tbl)
     doc.build(elements)
     buffer.seek(0)
     return buffer
+
 
 # PDF Download
 st.markdown("---")
