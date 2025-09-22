@@ -134,8 +134,16 @@ def generate_pdf(name, responses, results=None):
     return buffer
 
 # Download PDF
-if name and st.button("📄 Download My Report"):
-    pdf_bytes = generate_pdf(name, st.session_state.answers, st.session_state.results if st.session_state.checked else None)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    filename = f"ExerciseE_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
-    st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+st.markdown("---")
+st.subheader("📄 Export Your Report")
+
+if not name:
+    st.warning("Enter your name above to enable the PDF download button.")
+    st.button("📄 Download My Report", disabled=True)
+else:
+    if st.button("📄 Download My Report"):
+        pdf_bytes = generate_pdf(name, st.session_state.answers, st.session_state.results if st.session_state.checked else None)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+        filename = f"ExerciseE_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
+        st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+
