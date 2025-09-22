@@ -118,11 +118,11 @@ def generate_pdf(name, responses, results=None):
         correct_selections = selected_set & correct_set
 
         if selected_set == correct_set:
-            feedback_text = "Correct"
+            feedback_text = "✅ Correct"
         elif correct_selections:
-            feedback_text = "Partially correct"
+            feedback_text = "⚪ Partially correct"
         else:
-            feedback_text = "Incorrect"
+            feedback_text = "❌ Incorrect"
 
         elements.append(Paragraph(qtext, styles['Normal']))
         elements.append(Paragraph(f"Selected: {selected_text}", styles['Normal']))
