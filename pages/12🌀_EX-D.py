@@ -18,7 +18,7 @@ For each diagram (**a–g**), fill in:
 3) **An English word beginning with the sound**  
 """)
 
-name = st.text_input("Enter your name:")
+name = st.text_input("Enter your name: (In English)")
 
 
 # URLs of diagrams hosted on GitHub (replace with your actual GitHub raw links)
@@ -29,8 +29,7 @@ image_urls = {
     "d": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-d.png",
     "e": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-e.png",
     "f": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-f.png",
-    "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-g.png",
-    "h": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-h.png"
+    "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-g.png"
 }
 
 letters = list(image_urls.keys())
