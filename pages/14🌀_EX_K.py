@@ -48,20 +48,18 @@ for word in words:
     responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
 # Check answers
-# Check answers
 if st.button("🔍 Check My Work"):
     st.session_state.k_results = []
     for w in words:
         correct = answer_key[w]
         selected = responses[w]
-        if selected == correct:
-            st.session_state.k_results.append("✅")
-        else:
-            st.session_state.k_results.append("❌")
+        st.session_state.k_results.append("✅" if selected == correct else "❌")
 
-    # 🔄 Reset radios after checking
+    # 🔄 Clear radios completely
     for w in words:
-        st.session_state[f"radio_{w}"] = None
+        del st.session_state[f"radio_{w}"]
+
+    st.rerun()
 
 if "k_results" in st.session_state:
     st.markdown("### ✅ Feedback")
