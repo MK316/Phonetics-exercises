@@ -33,8 +33,7 @@ default_data = [
     {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[f]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
     {"Symbol": "[l]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[t]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[t]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""}
 ]
 
 df = pd.DataFrame(default_data)
