@@ -7,7 +7,7 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet
 
-st.set_page_config(page_title="Ch1 Exercise C: Describe Consonants", layout="centered")
+st.set_page_config(page_title="Ch1 Exercise C: Describe Consonants", layout="wide")
 
 st.title("Chapter 1 – Exercise C")
 st.markdown("### 🧩 Describe the consonants in the word **skinflint**")
@@ -25,35 +25,33 @@ Fill in the five columns for each consonant in the word **skinflint**, using the
 """)
 
 name = st.text_input("Enter your name:")
-submitted = False
 
-# Default input structure
+# Fixed input structure
 default_data = [
-    {"Symbol": "[s]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[k]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[n]", "1. Voicings": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[f]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[l]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[n]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
-    {"Symbol": "[t]", "1. Voicing": "", "2. Place": "", "3. Centrality": "", "4. Oral or nasal": "", "5. Manner": ""},
+    {"Symbol": "[s]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[k]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[n]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[f]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[l]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[n]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
+    {"Symbol": "[t]", "1. Voiced or voiceless": "", "2. Place": "", "3. Central or lateral": "", "4. Oral or nasal": "", "5. Articulatory action": ""},
 ]
 
 df = pd.DataFrame(default_data)
-# edited_df = st.data_editor(df, use_container_width=True, num_rows="fixed", key="table_input")
+
+# Scrollable table using fixed width and height
 with st.container():
-    st.markdown("### ✏️ Fill in the chart:")
+    st.markdown("### ✏️ Fill in the chart below:")
     edited_df = st.data_editor(
         df,
         use_container_width=False,
         hide_index=True,
-        column_config=None,
-        num_rows="fixed",
-        height=400,  # Enables vertical scroll
-        key="table_input"
+        key="table_input",
+        height=380,  # Enables vertical scroll
     )
     st.caption("↔️ Scroll right for more columns. 🖱 Scroll down for more rows.")
 
-# Hidden answer key for all 7 consonants
+# Hidden answer key
 answer_key = [
     {"1": "voiceless", "2": "alveolar", "3": "(central)", "4": "(oral)", "5": "fricative"},
     {"1": "voiceless", "2": "velar", "3": "(central)", "4": "(oral)", "5": "stop"},
@@ -109,7 +107,6 @@ def generate_pdf(name, table_data):
     elements.append(Paragraph(f"Timestamp: {timestamp}", styles['Normal']))
     elements.append(Spacer(1, 12))
 
-    # Exclude the Check column from PDF
     if "Check" in table_data.columns:
         table_data = table_data.drop(columns=["Check"])
     data = [list(table_data.columns)] + table_data.values.tolist()
