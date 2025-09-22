@@ -39,7 +39,19 @@ default_data = [
 ]
 
 df = pd.DataFrame(default_data)
-edited_df = st.data_editor(df, use_container_width=True, num_rows="fixed", key="table_input")
+# edited_df = st.data_editor(df, use_container_width=True, num_rows="fixed", key="table_input")
+with st.container():
+    st.markdown("### ✏️ Fill in the chart:")
+    edited_df = st.data_editor(
+        df,
+        use_container_width=False,
+        hide_index=True,
+        column_config=None,
+        num_rows="fixed",
+        height=400,  # Enables vertical scroll
+        key="table_input"
+    )
+    st.caption("↔️ Scroll right for more columns. 🖱 Scroll down for more rows.")
 
 # Hidden answer key for all 7 consonants
 answer_key = [
