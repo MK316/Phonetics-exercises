@@ -18,23 +18,23 @@ name = st.text_input("Enter your name:")
 # -- Define Questions and Answer Keys
 questions = [
     ("Circle the words that begin with a bilabial consonant.", ["met", "bet", "pet"]),
-    ("Circle the words that begin with a velar consonant.", ["got"]),
+    ("Circle the words that begin with a velar consonant.", ["got", "cot"]),
     ("Circle the words that begin with a labiodental consonant.", ["fat", "vat"]),
     ("Circle the words that begin with an alveolar consonant.", ["zip", "nip", "lip", "sip", "tip", "dip"]),
     ("Circle the words that begin with a dental consonant.", ["thigh", "thy"]),
     ("Circle the words that begin with a palato-alveolar consonant.", ["shy"]),
-    ("Circle the words that end with a fricative.", ["race", "wreath", "breathe"]),
-    ("Circle the words that end with a nasal.", ["rain", "rang"]),
-    ("Circle the words that end with a stop.", ["pill", "lip", "graph", "crab", "back"]),
+    ("Circle the words that end with a fricative.", ["race", "wreath", "bush", "breathe","rave","rose","rough"]),
+    ("Circle the words that end with a nasal.", ["rain", "rang", "dumb]),
+    ("Circle the words that end with a stop.", ["lip", "crab", "dog", "hide", "back"]),
     ("Circle the words that begin with a lateral.", ["lull"]),
-    ("Circle the words that begin with an approximant.", ["we", "you", "run"]),
-    ("Circle the words that end with an affricate.", ["much"]),
-    ("Circle the words in which the consonant in the middle is voiced.", ["mother", "robber", "leisure", "massive", "razor"]),
-    ("Circle the words that contain a high vowel.", ["suit", "meet"]),
+    ("Circle the words that begin with an approximant.", ["we", "you", "one", "run"]),
+    ("Circle the words that end with an affricate.", ["much", "edge"]),
+    ("Circle the words in which the consonant in the middle is voiced.", ["mother", "robber", "leisure", "stomach","razor"]),
+    ("Circle the words that contain a high vowel.", ["weed", "suit", "meet"]),
     ("Circle the words that contain a low vowel.", ["lad"]),
-    ("Circle the words that contain a front vowel.", ["gate"]),
-    ("Circle the words that contain a back vowel.", ["coop", "good"]),
-    ("Circle the words that contain a rounded vowel.", ["who", "but"])
+    ("Circle the words that contain a front vowel.", ["gate", "cat", "kit"]),
+    ("Circle the words that contain a back vowel.", ["coop", "cop", "good"]),
+    ("Circle the words that contain a rounded vowel.", ["who"])
 ]
 
 options = [
@@ -111,16 +111,28 @@ def generate_pdf(name, responses, results=None):
     for i, (question, selected) in enumerate(zip(questions, st.session_state.answers)):
         qtext = f"{i+1}. {question[0]}"
         selected_text = ", ".join(selected) if selected else "(No selection)"
-        feedback = f"Result: {results[i]}" if results else ""
+        
+        # Determine quality of result
+        correct_set = set(question[1])
+        selected_set = set(selected)
+        correct_selections = selected_set & correct_set
+
+        if selected_set == correct_set:
+            feedback_text = "Correct"
+        elif correct_selections:
+            feedback_text = "Partially correct"
+        else:
+            feedback_text = "Incorrect"
+
         elements.append(Paragraph(qtext, styles['Normal']))
         elements.append(Paragraph(f"Selected: {selected_text}", styles['Normal']))
-        if feedback:
-            elements.append(Paragraph(feedback, styles['Normal']))
+        elements.append(Paragraph(f"Result: {feedback_text}", styles['Normal']))
         elements.append(Spacer(1, 6))
 
     doc.build(elements)
     buffer.seek(0)
     return buffer
+
 
 # Download PDF
 if name and st.button("📄 Download My Report"):
