@@ -10,14 +10,14 @@ from reportlab.lib import colors
 st.set_page_config(page_title="Ch1 Exercise F: Medial Consonant Analysis", layout="wide")
 
 st.title("Chapter 1 – Exercise F")
-st.markdown("### Analyze the medial consonant sound in each word")
+st.markdown("### 🧠 Analyze the medial consonant sound in each word")
 
 st.markdown("""
 Define the **consonant sound in the middle** of each of the following words.  
 For each word, indicate:
 - **Voicing**: voiced or voiceless  
-- **Place of articulation**: e.g., alveolar, palatal, velar...  
-- **Manner of articulation**: stop, nasal, fricative, etc.
+- **Place of articulation**: e.g., alveolar, palato-alveolar, velar...  
+- **Manner of articulation**: stop, nasal, fricative, affricate, etc.
 
 The first row (*adder*) is provided as an example.
 """)
@@ -44,7 +44,6 @@ answer_key = {
     "9. sunny":   ("voiced", "alveolar", "nasal"),
     "10. lodger":  ("voiced", "palato-alveolar", "affricate"),
 }
-
 # Dropdown options
 voicing_options = ["voiced", "voiceless"]
 place_options = [
@@ -55,89 +54,101 @@ manner_options = [
     "stop", "nasal", "fricative", "affricate", "lateral", "approximant"
 ]
 
-# Table input
-st.markdown("### 📝 Fill out the table for the middle sound:")
+# ---------------- UI table (selectboxes) ----------------
+st.markdown("### 📝 Fill out the table:")
 
-data = []
+data = []  # (word, voicing, place, manner)
 
-for i, word in enumerate(words):
-    col1, col2, col3, col4 = st.columns([1, 2, 2, 2])
+for word in words:
+    col1, col2, col3, col4 = st.columns([1.2, 2, 2, 2])
     with col1:
         st.markdown(f"**{word}**")
     if word == "adder":
-        # Pre-filled and locked example
+        # Pre-filled & locked example
         with col2: st.selectbox("Voicing", voicing_options, index=0, disabled=True, key=f"{word}_v")
         with col3: st.selectbox("Place", place_options, index=3, disabled=True, key=f"{word}_p")
         with col4: st.selectbox("Manner", manner_options, index=0, disabled=True, key=f"{word}_m")
         data.append((word, "voiced", "alveolar", "stop"))
     else:
         with col2:
-            voicing = st.selectbox("", voicing_options, key=f"{word}_v")
+            v = st.selectbox("", voicing_options, key=f"{word}_v")
         with col3:
-            place = st.selectbox("", place_options, key=f"{word}_p")
+            p = st.selectbox("", place_options, key=f"{word}_p")
         with col4:
-            manner = st.selectbox("", manner_options, key=f"{word}_m")
-        data.append((word, voicing, place, manner))
+            m = st.selectbox("", manner_options, key=f"{word}_m")
+        data.append((word, v, p, m))
 
-# Feedback check
+# -------- Feedback (optional on-page) -------
 if st.button("🔍 Check My Work"):
-    st.markdown("### ✅ Feedback")
-    results = []
-    for word, voicing, place, manner in data:
-        correct = answer_key.get(word)
-        if not correct:
-            results.append("✅")  # for adder example
-        elif (voicing, place, manner) == correct:
-            results.append("✅")
-        else:
-            results.append("❌")
-    for i, (word, _, _, _) in enumerate(data):
-        result = results[i]
-        feedback = "Correct" if result == "✅" else "Needs revision"
-        st.markdown(f"**{i+1}. {word}** — {result} {feedback}")
-else:
-    results = None
+    st.session_state.f_results = []
+    for (w, v, p, m) in data:
+        correct = answer_key[w]
+        st.session_state.f_results.append("✅" if (v, p, m) == correct else "❌")
 
-# PDF report generation
-def generate_pdf(name, table_data, results=None):
+if "f_results" in st.session_state:
+    st.markdown("### ✅ Feedback")
+    for i, (w, _, _, _) in enumerate(data):
+        res = st.session_state.f_results[i]
+        st.markdown(f"**{i+1}. {w}** — {res} {'Correct' if res=='✅' else 'Needs revision'}")
+
+# ---------------- PDF generation with black cells for incorrect answers ----------------
+def generate_pdf(name, table_data):
+    """
+    Build a PDF. Any cell (Voicing/Place/Manner) that is incorrect is shaded BLACK with WHITE text.
+    """
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
     styles = getSampleStyleSheet()
     elements = []
 
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    elements.append(Paragraph("<b>Chapter 1 – Exercise F Report</b>", styles['Title']))
+    elements.append(Paragraph("<b>Chapter 1 – Exercise F Report</b>", styles["Title"]))
     elements.append(Spacer(1, 12))
-    elements.append(Paragraph(f"Name: {name}", styles['Normal']))
-    elements.append(Paragraph(f"Timestamp: {timestamp}", styles['Normal']))
+    elements.append(Paragraph(f"Name: {name}", styles["Normal"]))
+    elements.append(Paragraph(f"Timestamp: {timestamp}", styles["Normal"]))
     elements.append(Spacer(1, 12))
 
-    # Table content
+    # Build table rows
     header = ["Word", "Voicing", "Place", "Manner"]
-    if results:
-        header.append("Result")
-        rows = [header] + [
-            [w, v, p, m, results[i]] for i, (w, v, p, m) in enumerate(table_data)
-        ]
-    else:
-        rows = [header] + [
-            [w, v, p, m] for (w, v, p, m) in table_data
-        ]
+    rows = [header] + [[w, v, p, m] for (w, v, p, m) in table_data]
 
-    table = Table(rows, repeatRows=1)
-    table.setStyle(TableStyle([
+    tbl = Table(rows, repeatRows=1)
+    style_cmds = [
         ('BACKGROUND', (0,0), (-1,0), colors.lightblue),
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
         ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
         ('ALIGN', (0,0), (-1,-1), 'CENTER'),
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold')
-    ]))
+        ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
+    ]
 
-    elements.append(table)
+    # Shade incorrect cells (columns 1..3 for each data row)
+    # Table coordinates: (col, row); header row is row 0, so data rows start at row 1.
+    for idx, (w, v, p, m) in enumerate(table_data, start=1):
+        cv, cp, cm = answer_key[w]
+        # Compare and shade if incorrect
+        if v != cv:
+            style_cmds += [
+                ('BACKGROUND', (1, idx), (1, idx), colors.black),
+                ('TEXTCOLOR',  (1, idx), (1, idx), colors.white),
+            ]
+        if p != cp:
+            style_cmds += [
+                ('BACKGROUND', (2, idx), (2, idx), colors.black),
+                ('TEXTCOLOR',  (2, idx), (2, idx), colors.white),
+            ]
+        if m != cm:
+            style_cmds += [
+                ('BACKGROUND', (3, idx), (3, idx), colors.black),
+                ('TEXTCOLOR',  (3, idx), (3, idx), colors.white),
+            ]
+
+    tbl.setStyle(TableStyle(style_cmds))
+    elements.append(tbl)
     doc.build(elements)
     buffer.seek(0)
     return buffer
 
-# PDF download
+# --------- Download PDF UI ----------
 st.markdown("---")
 st.subheader("📄 Export Your Report")
 
@@ -146,7 +157,7 @@ if not name:
     st.button("📄 Download My Report", disabled=True)
 else:
     if st.button("📄 Download My Report"):
-        pdf_bytes = generate_pdf(name, data, results)
+        pdf_bytes = generate_pdf(name, data)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M")
         filename = f"ExerciseF_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
         st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
