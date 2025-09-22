@@ -26,7 +26,7 @@ name = st.text_input("Enter your name:")
 
 # List of words (adder is the example)
 words = [
-    "adder", "father", "singing", "etching", "robber",
+    "Example: adder", "father", "singing", "etching", "robber",
     "ether", "pleasure", "hopper", "selling", "sunny", "lodger"
 ]
 
