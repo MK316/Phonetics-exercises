@@ -48,6 +48,7 @@ for word in words:
     responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
 # Check answers
+# Check answers
 if st.button("🔍 Check My Work"):
     st.session_state.k_results = []
     for w in words:
@@ -57,6 +58,10 @@ if st.button("🔍 Check My Work"):
             st.session_state.k_results.append("✅")
         else:
             st.session_state.k_results.append("❌")
+
+    # 🔄 Reset radios after checking
+    for w in words:
+        st.session_state[f"radio_{w}"] = None
 
 if "k_results" in st.session_state:
     st.markdown("### ✅ Feedback")
