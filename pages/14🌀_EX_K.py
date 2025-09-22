@@ -129,9 +129,9 @@ st.subheader("📄 Export Your Report")
 
 if not name:
     st.warning("Please enter your name to enable PDF download.")
-    st.button("📄 Download My Report", disabled=True)
+    st.button("📄 Download My Report", disabled=True, key="disabled_download")
 else:
-    if st.button("📄 Download My Report"):
+    if st.button("📄 Download My Report", key="enabled_download"):
         pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
         timestamp = datetime.now().strftime("%Y%m%d_%H%M")
         filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
