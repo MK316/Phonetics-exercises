@@ -72,11 +72,11 @@ def check_all_columns(student_df, key):
         correct_row = answer_key[i]
         mismatch = False
         for col_idx, col_label in enumerate([
-            "1. Voiced or voiceless",
+            "1. Voicing",
             "2. Place",
-            "3. Central or lateral",
+            "3. Centrality",
             "4. Oral or nasal",
-            "5. Articulatory action"
+            "5. Manner"
         ], start=1):
             student_val = normalize(row[col_label])
             correct_val = normalize(correct_row[str(col_idx)])
