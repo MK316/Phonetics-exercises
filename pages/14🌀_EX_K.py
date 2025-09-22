@@ -18,7 +18,7 @@ Select the correct number (1–7) for each word.
 
 name = st.text_input("Enter your name:")
 
-# Words and answer key (number of phonemes)
+# Words and answer key
 words = [
     "1. laugh", "2. begged", "3. graphic", "4. fish",
     "5. fishes", "6. fished", "7. batting", "8. quick",
@@ -26,29 +26,14 @@ words = [
 ]
 
 answer_key = {
-    "1. laugh": 3,
-    "2. begged": 4,
-    "3. graphic": 6,
-    "4. fish": 3,
-    "5. fishes": 5,
-    "6. fished": 4,
-    "7. batting": 5,
-    "8. quick": 4,
-    "9. these": 3,
-    "10. physics": 6,
-    "11. knock": 3,
-    "12. axis": 5
+    "1. laugh": 3, "2. begged": 4, "3. graphic": 6, "4. fish": 3,
+    "5. fishes": 5, "6. fished": 4, "7. batting": 5, "8. quick": 4,
+    "9. these": 3, "10. physics": 6, "11. knock": 3, "12. axis": 5
 }
 
 options = list(range(1, 8))  # 1–7 choices
 
-# Collect responses
-responses = {}
-for word in words:
-    responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
-
-
-# --- put this near the top, before PDF button use ---
+# --- PDF generator ---
 def generate_pdf(name, responses, results=None):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
@@ -66,7 +51,7 @@ def generate_pdf(name, responses, results=None):
     header = ["Word", "Selected", "Result"]
     rows = [header]
     for w in words:
-        selected = responses[w]
+        selected = responses.get(w, "-")
         correct = answer_key[w]
         result_text = "Correct" if selected == correct else "Incorrect"
         rows.append([w, selected, result_text])
@@ -79,8 +64,9 @@ def generate_pdf(name, responses, results=None):
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
     ]
 
+    # Shade wrong answers
     for i, w in enumerate(words, start=1):
-        if responses[w] != answer_key[w]:
+        if responses.get(w) != answer_key[w]:
             style_cmds += [
                 ("BACKGROUND", (1, i), (1, i), colors.black),
                 ("TEXTCOLOR", (1, i), (1, i), colors.white),
@@ -91,48 +77,43 @@ def generate_pdf(name, responses, results=None):
     doc.build(elements)
     buffer.seek(0)
     return buffer
-# --- end generate_pdf ---
 
+# --- Collect responses ---
+responses = {}
+for word in words:
+    responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
+# --- Check answers button ---
+if st.button("🔍 Check My Work", key="check_button"):
+    st.session_state.k_results = []
+    for w in words:
+        if responses[w] == answer_key[w]:
+            st.session_state.k_results.append("✅")
+        else:
+            st.session_state.k_results.append("❌")
 
-# Check answers
-if st.button("📄 Download My Report"):
-    pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
-    st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
-
-    # 🔄 Clear responses after generating report
+    # Reset radios immediately after checking
     for w in words:
         if f"radio_{w}" in st.session_state:
             del st.session_state[f"radio_{w}"]
-
-    # Optionally clear results too
-    if "k_results" in st.session_state:
-        del st.session_state["k_results"]
-
-    # Force a clean rerun so UI resets
     st.rerun()
 
+# --- Show feedback ---
 if "k_results" in st.session_state:
     st.markdown("### ✅ Feedback")
     for i, w in enumerate(words):
         res = st.session_state.k_results[i]
-        fb = "Correct" if res == "✅" else "Needs revision"
-        st.markdown(f"{w} — {res} {fb}")
+        fb = "Correct" if res == "✅" else "Incorrect"
+        st.markdown(f"{w} — {fb}")
 
-
-
-# PDF Download
+# --- PDF Export ---
 st.markdown("---")
 st.subheader("📄 Export Your Report")
 
 if not name:
     st.warning("Please enter your name to enable PDF download.")
-    st.button("📄 Download My Report", disabled=True, key="disabled_download")
 else:
-    if st.button("📄 Download My Report", key="enabled_download"):
-        pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-        filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
-        st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
+    pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
+    st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
