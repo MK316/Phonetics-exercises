@@ -105,13 +105,15 @@ if st.button("🔍 Check My Work", key="check_button_L"):
     # Save snapshot for PDF
     st.session_state.saved_for_pdf_L = dict(st.session_state.responses_L)
 
+
 # --- Show feedback ---
 if "results_L" in st.session_state:
     st.markdown("### ✅ Feedback")
     for i, (q, correct) in enumerate(questions.items(), start=1):
-        res = st.session_state.results_L[i]
+        res = st.session_state.results_L[i-1]   # fix index
         fb = "Correct" if res == "✅" else "Incorrect"
         st.markdown(f"{i}. {q} — {fb}")
+
 
 # --- PDF Export ---
 st.markdown("---")
