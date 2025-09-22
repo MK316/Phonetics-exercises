@@ -47,6 +47,54 @@ responses = {}
 for word in words:
     responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
+
+# --- put this near the top, before PDF button use ---
+def generate_pdf(name, responses, results=None):
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4)
+    styles = getSampleStyleSheet()
+    elements = []
+
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
+    elements.append(Paragraph("<b>Chapter 1 – Exercise K Report</b>", styles["Title"]))
+    elements.append(Spacer(1, 12))
+    elements.append(Paragraph(f"Name: {name}", styles["Normal"]))
+    elements.append(Paragraph(f"Timestamp: {timestamp}", styles["Normal"]))
+    elements.append(Spacer(1, 12))
+
+    # Table rows
+    header = ["Word", "Selected", "Result"]
+    rows = [header]
+    for w in words:
+        selected = responses[w]
+        correct = answer_key[w]
+        result_text = "Correct" if selected == correct else "Incorrect"
+        rows.append([w, selected, result_text])
+
+    tbl = Table(rows, repeatRows=1)
+    style_cmds = [
+        ("BACKGROUND", (0, 0), (-1, 0), colors.lightblue),
+        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+    ]
+
+    for i, w in enumerate(words, start=1):
+        if responses[w] != answer_key[w]:
+            style_cmds += [
+                ("BACKGROUND", (1, i), (1, i), colors.black),
+                ("TEXTCOLOR", (1, i), (1, i), colors.white),
+            ]
+
+    tbl.setStyle(TableStyle(style_cmds))
+    elements.append(tbl)
+    doc.build(elements)
+    buffer.seek(0)
+    return buffer
+# --- end generate_pdf ---
+
+
+
 # Check answers
 if st.button("📄 Download My Report"):
     pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
@@ -73,55 +121,6 @@ if "k_results" in st.session_state:
         fb = "Correct" if res == "✅" else "Needs revision"
         st.markdown(f"{w} — {res} {fb}")
 
-# PDF generation with black shading for incorrect cells
-def generate_pdf(name, responses, results=None):
-    buffer = BytesIO()
-    doc = SimpleDocTemplate(buffer, pagesize=A4)
-    styles = getSampleStyleSheet()
-    elements = []
-
-    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
-    elements.append(Paragraph("<b>Chapter 1 – Exercise K Report</b>", styles["Title"]))
-    elements.append(Spacer(1, 12))
-    elements.append(Paragraph(f"Name: {name}", styles["Normal"]))
-    elements.append(Paragraph(f"Timestamp: {timestamp}", styles["Normal"]))
-    elements.append(Spacer(1, 12))
-
-    # Table rows
-    header = ["Word", "Selected", "Result"]
-    rows = [header]
-    for i, w in enumerate(words):
-        selected = responses[w]
-        correct = answer_key[w]
-        if selected == correct:
-            result_text = "Correct"
-        else:
-            result_text = "Incorrect"
-        rows.append([w, selected, result_text])
-
-    tbl = Table(rows, repeatRows=1)
-    style_cmds = [
-        ("BACKGROUND", (0, 0), (-1, 0), colors.lightblue),
-        ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
-        ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-    ]
-
-    # Shade wrong selections in black
-    for i, w in enumerate(words, start=1):
-        selected = responses[w]
-        correct = answer_key[w]
-        if selected != correct:
-            style_cmds += [
-                ("BACKGROUND", (1, i), (1, i), colors.black),
-                ("TEXTCOLOR", (1, i), (1, i), colors.white),
-            ]
-
-    tbl.setStyle(TableStyle(style_cmds))
-    elements.append(tbl)
-    doc.build(elements)
-    buffer.seek(0)
-    return buffer
 
 
 # PDF Download
