@@ -26,23 +26,23 @@ name = st.text_input("Enter your name:")
 
 # List of words (adder is the example)
 words = [
-    "adder", "father", "singing", "etching", "robber",
-    "ether", "pleasure", "hopper", "selling", "sunny", "lodger"
+    "adder", "1. father", "2. singing", "3. etching", "4. robber",
+    "5. ether", "6. pleasure", "7. hopper", "8. selling", "9. sunny", "10. lodger"
 ]
 
 # Answer key
 answer_key = {
     "adder":   ("voiced", "alveolar", "stop"),
-    "father":  ("voiced", "dental", "fricative"),
-    "singing": ("voiced", "velar", "nasal"),
-    "etching": ("voiceless", "palato-alveolar", "affricate"),
-    "robber":  ("voiced", "bilabial", "stop"),
-    "ether":   ("voiceless", "dental", "fricative"),
-    "pleasure":("voiced", "palato-alveolar", "fricative"),
-    "hopper":  ("voiceless", "bilabial", "stop"),
-    "selling": ("voiced", "alveolar", "lateral"),
-    "sunny":   ("voiced", "alveolar", "nasal"),
-    "lodger":  ("voiced", "palato-alveolar", "affricate"),
+    "1. father":  ("voiced", "dental", "fricative"),
+    "2. singing": ("voiced", "velar", "nasal"),
+    "3. etching": ("voiceless", "palato-alveolar", "affricate"),
+    "4. robber":  ("voiced", "bilabial", "stop"),
+    "5. ether":   ("voiceless", "dental", "fricative"),
+    "6. pleasure":("voiced", "palato-alveolar", "fricative"),
+    "7. hopper":  ("voiceless", "bilabial", "stop"),
+    "8. selling": ("voiced", "alveolar", "lateral"),
+    "9. sunny":   ("voiced", "alveolar", "nasal"),
+    "10. lodger":  ("voiced", "palato-alveolar", "affricate"),
 }
 
 # Dropdown options
