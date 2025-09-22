@@ -24,13 +24,13 @@ name = st.text_input("Enter your name:")
 # URLs of diagrams hosted on GitHub (replace with your actual GitHub raw links)
 image_urls = {
     "a": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "b": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "c": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "d": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "e": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "f": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
-    "h": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png"
+    "b": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-b.png",
+    "c": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-c.png",
+    "d": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-d.png",
+    "e": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-e.png",
+    "f": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-f.png",
+    "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-g.png",
+    "h": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-h.png"
 }
 
 letters = list(image_urls.keys())
