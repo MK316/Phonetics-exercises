@@ -80,7 +80,7 @@ def generate_pdf(name, responses, results=None):
     elements.append(Spacer(1, 12))
 
     # Table rows
-    header = ["Word", "Selected", "Correct", "Result"]
+    header = ["Word", "Selected", "Result"]
     rows = [header]
     for i, w in enumerate(words):
         selected = responses[w]
@@ -89,7 +89,7 @@ def generate_pdf(name, responses, results=None):
             result_text = "Correct"
         else:
             result_text = "Incorrect"
-        rows.append([w, selected, correct, result_text])
+        rows.append([w, selected, result_text])
 
     tbl = Table(rows, repeatRows=1)
     style_cmds = [
