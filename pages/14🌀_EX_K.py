@@ -48,17 +48,22 @@ for word in words:
     responses[word] = st.radio(word, options, horizontal=True, key=f"radio_{word}")
 
 # Check answers
-if st.button("🔍 Check My Work"):
-    st.session_state.k_results = []
-    for w in words:
-        correct = answer_key[w]
-        selected = responses[w]
-        st.session_state.k_results.append("✅" if selected == correct else "❌")
+if st.button("📄 Download My Report"):
+    pdf_bytes = generate_pdf(name, responses, st.session_state.k_results if "k_results" in st.session_state else None)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
+    filename = f"ExerciseK_Report_{name.replace(' ', '_')}_{timestamp}.pdf"
+    st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf")
 
-    # 🔄 Clear radios completely
+    # 🔄 Clear responses after generating report
     for w in words:
-        del st.session_state[f"radio_{w}"]
+        if f"radio_{w}" in st.session_state:
+            del st.session_state[f"radio_{w}"]
 
+    # Optionally clear results too
+    if "k_results" in st.session_state:
+        del st.session_state["k_results"]
+
+    # Force a clean rerun so UI resets
     st.rerun()
 
 if "k_results" in st.session_state:
