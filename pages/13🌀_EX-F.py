@@ -34,14 +34,14 @@ words = [
 answer_key = {
     "adder":   ("voiced", "alveolar", "stop"),
     "1. father":  ("voiced", "dental", "fricative"),
-    "2. singing": ("voiced", "velar", "nasal"),
+    "2. singing": ("voiced", "velar", "nasal (stop)"),
     "3. etching": ("voiceless", "palato-alveolar", "affricate"),
     "4. robber":  ("voiced", "bilabial", "stop"),
     "5. ether":   ("voiceless", "dental", "fricative"),
     "6. pleasure":("voiced", "palato-alveolar", "fricative"),
     "7. hopper":  ("voiceless", "bilabial", "stop"),
     "8. selling": ("voiced", "alveolar", "lateral"),
-    "9. sunny":   ("voiced", "alveolar", "nasal"),
+    "9. sunny":   ("voiced", "alveolar", "nasal (stop)"),
     "10. lodger":  ("voiced", "palato-alveolar", "affricate"),
 }
 # Dropdown options
@@ -51,7 +51,7 @@ place_options = [
     "palatal", "velar", "glottal"
 ]
 manner_options = [
-    "stop", "nasal", "fricative", "affricate", "lateral", "approximant"
+    "stop", "nasal (stop)", "fricative", "affricate", "lateral", "approximant"
 ]
 
 # ---------------- UI table (selectboxes) ----------------
