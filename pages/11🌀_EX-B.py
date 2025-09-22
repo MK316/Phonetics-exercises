@@ -49,7 +49,7 @@ with st.container():
         key="table_input",
         height=380,  # Enables vertical scroll
     )
-    st.caption("↔️ Scroll right for more columns. 🖱 Scroll down for more rows.")
+    # st.caption("↔️ Scroll right for more columns. 🖱 Scroll down for more rows.")
 
 # Hidden answer key
 answer_key = [
