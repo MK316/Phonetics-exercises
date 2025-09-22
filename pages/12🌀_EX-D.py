@@ -9,17 +9,17 @@ from reportlab.lib import colors
 st.set_page_config(page_title="Ch1 Exercise D: Places of Articulation", layout="centered")
 
 st.title("Chapter 1 – Exercise D")
-st.markdown("### 🗣️ Identify Place, Manner, and Example Word")
+st.markdown("### 🗣️ Identify Place, Manner, and an Example Word")
 
 st.markdown("""
-Look at each diagram (**a–g**).  
-For each, fill in:
-1. **Place of articulation**  
-2. **Manner of articulation**  
-3. **An English word beginning with the sound**  
+For each diagram (**a–g**), fill in:
+1) **Place of articulation**  
+2) **Manner of articulation**  
+3) **An English word beginning with the sound**  
 """)
 
 name = st.text_input("Enter your name:")
+
 
 # URLs of diagrams hosted on GitHub (replace with your actual GitHub raw links)
 image_urls = {
@@ -32,37 +32,29 @@ image_urls = {
     "g": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png",
     "h": "https://github.com/MK316/Phonetics-exercises/raw/main/pages/images/fig-16-a.png"
 }
+
 letters = list(image_urls.keys())
 
-# --- Session state for answers & navigation ---
+# --- Session state ---
 if "responses_D" not in st.session_state:
     st.session_state.responses_D = {k: {"place": "", "manner": "", "example": ""} for k in letters}
 if "d_index" not in st.session_state:
-    st.session_state.d_index = 0  # start on (a)
+    st.session_state.d_index = 0
 
-# --- Diagram picker + prev/next ---
-colA, colB, colC = st.columns([1,2,1])
+# --- Navigation ---
+colA, colC = st.columns([1,1])
 with colA:
     if st.button("⬅️ Previous", use_container_width=True, disabled=st.session_state.d_index == 0):
         st.session_state.d_index = max(0, st.session_state.d_index - 1)
-with colB:
-    current_letter = st.selectbox(
-        "Go to diagram",
-        [f"({l})" for l in letters],
-        index=st.session_state.d_index,
-        key="d_select",
-    )
-    # sync index if changed via selectbox
-    st.session_state.d_index = [f"({l})" for l in letters].index(current_letter)
 with colC:
     if st.button("Next ➡️", use_container_width=True, disabled=st.session_state.d_index == len(letters) - 1):
         st.session_state.d_index = min(len(letters) - 1, st.session_state.d_index + 1)
 
 letter = letters[st.session_state.d_index]
-st.markdown(f"#### Diagram {current_letter}")
-st.image(image_urls[letter], caption=f"Figure 1.16 {current_letter}", width=360)
+st.markdown(f"#### Diagram ({letter})")
+st.image(image_urls[letter], caption=f"Figure 1.16 ({letter})", width=360)
 
-# --- Inputs for the current diagram ---
+# --- Inputs for this diagram ---
 st.session_state.responses_D[letter]["place"] = st.text_input(
     "Place of articulation",
     value=st.session_state.responses_D[letter]["place"],
@@ -81,7 +73,6 @@ st.session_state.responses_D[letter]["example"] = st.text_input(
 
 st.markdown("---")
 st.subheader("Summary (auto-saves)")
-# Compact summary table in the app
 summary_rows = [["Diagram", "Place", "Manner", "Example"]]
 for k in letters:
     a = st.session_state.responses_D[k]
@@ -89,7 +80,7 @@ for k in letters:
 
 st.table(summary_rows)
 
-# --- PDF generator (returns real PDF bytes) ---
+# --- PDF generator ---
 def generate_pdf(name: str, responses: dict) -> bytes:
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4)
@@ -115,15 +106,14 @@ def generate_pdf(name: str, responses: dict) -> bytes:
         ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
         ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
     ]))
     elements.append(tbl)
 
     doc.build(elements)
     buffer.seek(0)
-    return buffer.getvalue()  # >>> return raw PDF bytes, not HTML
+    return buffer.getvalue()
 
-# --- PDF Export with reset after download ---
+# --- PDF Export ---
 st.markdown("---")
 st.subheader("📄 Export Your Report")
 
@@ -134,18 +124,10 @@ else:
     ts = datetime.now().strftime("%Y%m%d_%H%M")
     filename = f"ExerciseD_Report_{name.replace(' ', '_')}_{ts}.pdf"
 
-    # download_button returns True exactly when clicked
-    if st.download_button(
-        "⬇️ Download PDF",
-        data=pdf_bytes,
-        file_name=filename,
-        mime="application/pdf",
-        key="download_pdf_D",
-    ):
-        # Reset all answers for a fresh attempt
+    if st.download_button("⬇️ Download PDF", data=pdf_bytes, file_name=filename, mime="application/pdf"):
+        # Reset after download
         for k in letters:
             st.session_state.responses_D[k] = {"place": "", "manner": "", "example": ""}
         st.session_state.d_index = 0
-        st.session_state.d_select = "(a)"
         st.success("Report downloaded. The exercise has been reset.")
         st.rerun()
