@@ -55,10 +55,10 @@ with st.container():
 answer_key = [
     {"1": "voiceless", "2": "alveolar", "3": "(central)", "4": "(oral)", "5": "fricative"},
     {"1": "voiceless", "2": "velar", "3": "(central)", "4": "(oral)", "5": "stop"},
-    {"1": "voiced", "2": "alveolar", "3": "(central)", "4": "nasal", "5": "nasal"},
+    {"1": "voiced", "2": "alveolar", "3": "(Not applicable)", "4": "nasal", "5": "nasal"},
     {"1": "voiceless", "2": "labiodental", "3": "(central)", "4": "(oral)", "5": "fricative"},
     {"1": "voiced", "2": "alveolar", "3": "lateral", "4": "(oral)", "5": "liquid"},
-    {"1": "voiced", "2": "alveolar", "3": "(central)", "4": "nasal", "5": "nasal"},
+    {"1": "voiced", "2": "alveolar", "3": "(Not applicable)", "4": "nasal", "5": "nasal"},
     {"1": "voiceless", "2": "alveolar", "3": "(central)", "4": "(oral)", "5": "stop"},
 ]
 
