@@ -10,7 +10,7 @@ from reportlab.lib import colors
 st.set_page_config(page_title="Ch1 Exercise F: Medial Consonant Analysis", layout="wide")
 
 st.title("Chapter 1 – Exercise F")
-st.markdown("### 🧠 Analyze the medial consonant sound in each word")
+st.markdown("### ⛄ Analyze the medial consonant sound in each word")
 
 st.markdown("""
 Define the **consonant sound in the middle** of each of the following words.  
